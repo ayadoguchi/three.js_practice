@@ -10,28 +10,29 @@
 <script src="js/OrbitControls.js"></script>
 <script>
   (function () {
-    var width = 500;
-    var height = 500;
+    var width = 500,
+        height = 500,
+        cube = [],
+        count = 30,
+        i,
+        cubeSize;
+
 
     //scene　(ステージを作成)
     var scene = new THREE.Scene();
 
     //mesh（形を作る）
 
-    //矩形
-    var geometry = new THREE.CubeGeometry(50, 50, 50);
-    var material = new THREE.MeshLambertMaterial({ color: 0xff0000});
-    var cube = new THREE.Mesh(geometry, material);
-    cube.castShadow = true;
-    cube.position.set(0, 50, 0);
-    scene.add(cube);
+    for(i= 0; i < count; i++) {
+      cubeSize = r(40);
+      var geometry = new THREE.CubeGeometry(cubeSize, cubeSize, cubeSize);
+      var material = new THREE.MeshLambertMaterial({ color: 'rgb('+r(255)+','+r(255)+','+r(255)+')'});
 
-    //球体
-//    var sGeometry = new THREE.SphereGeometry(30);
-//    var sMaterial = new THREE.MeshLambertMaterial({ color: 0xfefefe});
-//    var sphere = new THREE.Mesh(sGeometry, sMaterial);
-//    sphere.position.set(100, 100, 100);
-//    scene.add(sphere);
+      cube[i] = new THREE.Mesh(geometry, material);
+      cube[i].castShadow = true;
+      cube[i].position.set(0, 50+r(200), 0);
+      scene.add(cube[i]);
+    }
 
     //地面
     var pGeometry = new THREE.PlaneGeometry(300, 300);
@@ -59,7 +60,7 @@
     var camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
 
     camera.position.set(200, 300, 500);
-    camera.lookAt(cube.position);
+    //camera.lookAt(cube.position);
 
     //rendering（描画させる）
     var renderer = new THREE.WebGLRenderer();
@@ -78,15 +79,23 @@
 
     function render() {
       requestAnimationFrame(render);
-      cube.rotation.y += 1 * Math.PI / 180;
-      cube.rotation.x += 1 * Math.PI / 180;
-      cube.rotation.z += 1 * Math.PI / 180;
-      cube.position.x = Math.sin(new Date().getTime() / 200) * 100;
-      cube.position.z = Math.cos(new Date().getTime() / 200) * 100;
+
+      for(i= 0; i < count; i++) {
+        cube[i].rotation.y += i * Math.PI / 180;
+        cube[i].rotation.x += i * Math.PI / 180;
+        cube[i].rotation.z += i * Math.PI / 180;
+        cube[i].position.x = Math.sin(new Date().getTime() / (200+i)) * 100;
+        cube[i].position.z = Math.cos(new Date().getTime() / (200+i)) * 100;
+      }
+
       renderer.render(scene, camera);
       controls.update();
     }
     render();
+
+    function r(n){
+      return Math.floor(Math.random() * (n + i));
+    }
   })();
 </script>
 </body>
