@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>three.js</title>
+</head>
+<body>
+<div id="stage"></div>
+<script src="js/three.min.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script>
+  (function () {
+    var width = 1000,
+        height = 1000;
+
+
+    //scene　(ステージを作成)
+    var scene = new THREE.Scene();
+
+    //mesh（形を作る）
+      var geometry = new THREE.SphereGeometry(1, 32, 16);
+      var material = new THREE.MeshLambertMaterial({ color: 0xffffff, ambient: 0xffffff, specular: 0xcccccc, shininess: 50, metal: true, map: THREE.ImageUtils.loadTexture('img/earth_lights_lrg.jpg')});
+
+      var mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+
+    //light（光をあてる）
+    var light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position = new THREE.Vector3(0.577, 0.577, 0.577);
+    light.castShadow = true;
+    scene.add(light);
+    var ambient = new THREE.AmbientLight(0xffffff);
+    scene.add(ambient);
+
+    //helper（位置確認）
+    var axis = new THREE.AxisHelper(1000);
+    axis.position.set(0, 0, 0);
+    scene.add(axis);
+
+    //camera（視点を決める）
+    var camera = new THREE.PerspectiveCamera(15, 500 / 500);
+
+    camera.position = new THREE.Vector3(0, 10, 8);
+    //camera.lookAt(cube.position);
+    scene.add(camera);
+
+    //rendering（描画させる）
+    var renderer = new THREE.WebGLRenderer({ antialias:true });
+
+    //ステージの大きさ
+    renderer.setSize(width, height);
+
+    //ステージの色
+    renderer.setClearColor(0x000000, 1);
+    renderer.shadowMapEnabled = true;
+    document.getElementById('stage').appendChild(renderer.domElement);
+
+
+    //control
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    function render() {
+      requestAnimationFrame(render);
+      renderer.render(scene, camera);
+      controls.update();
+    }
+    render();
+  })();
+</script>
+</body>
+</html>
