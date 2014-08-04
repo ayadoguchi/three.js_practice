@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>three.js</title>
+</head>
+<body>
+<div id="stage"></div>
+<script src="js/three.min.js"></script>
+<!--追加分-->
+<script src="js/OrbitControls.js"></script>
+<!--追加分-->
+<script>
+  (function () {
+    var width = 500,
+        height = 500;
+    //シーン、メッシュ、ライト、地面（なくても）、レンダラー、
+
+    //scene　(ステージを作成)
+    var scene = new THREE.Scene();
+
+    //mesh（形を作る）
+
+    //顔
+    //（横幅/高さ/奥行き）
+    var geometry = new THREE.SphereGeometry(5, 32, 16);//ジオメトリー
+    var texture = THREE.ImageUtils.loadTexture('img/face1.png');
+    console.log(texture);
+    //カラーテクスチャマップ
+    var material = new THREE.MeshPhongMaterial({
+      map: texture, bumpMap:texture});//マテリアル
+    var mesh = new THREE.Mesh(geometry, material);//メッシュ
+    mesh.position.set(0, 20, 0);
+    mesh.castShadow = true;
+    scene.add(mesh);
+
+    //左耳
+    var geometry_e_l = new THREE.SphereGeometry(2, 32, 16);
+    var texture_e_l = THREE.ImageUtils.loadTexture('img/mimi_l.png');
+    var material_e_l = new THREE.MeshPhongMaterial({
+      map: texture_e_l, bumpMap:texture_e_l, bumpScale: 0.05});
+    var mesh_e_l = new THREE.Mesh(geometry_e_l, material_e_l);
+    mesh_e_l.position.set(2, 24, 5);
+    mesh_e_l.castShadow = true;
+    scene.add(mesh_e_l);
+
+    //右耳
+    var geometry_e_r = new THREE.SphereGeometry(2, 32, 32,0);
+    var texture_e_r = THREE.ImageUtils.loadTexture('img/mimi_r.png');
+    var material_e_r = new THREE.MeshPhongMaterial({
+      map: texture_e_r, bumpMap:texture_e_r, bumpScale: 0.05,wireframe: true});
+    var mesh_e_r = new THREE.Mesh(geometry_e_r, material_e_r);
+    mesh_e_r.position.set(2, 24, -5);
+    mesh_e_r.castShadow = true;
+    scene.add(mesh_e_r);
+
+    //地面
+    var pGeometry = new THREE.PlaneGeometry(300, 300);
+    var pMaterial = new THREE.MeshLambertMaterial({ color: 0x000000, side: THREE.DoubleSide});
+    var plane = new THREE.Mesh(pGeometry, pMaterial);
+    plane.receiveShadow = true;
+    plane.position.set(0, 0, 0);
+    plane.rotation.x = 90 * Math.PI / 180;
+    scene.add(plane);
+
+    //light（光をあてる）
+    //ライト1つ目 平行光源
+    var light = new THREE.DirectionalLight(0xffffff,3);
+    light.position.set(0, 100, 30);
+    light.castShadow = true;
+    light.shadowMapWidth = 2048;//影をなめらかにする start512
+    light.shadowMapHeight = 2048;//影をなめらかにする
+    scene.add(light);
+    //ライト2つ目 環境光
+    var ambient = new THREE.AmbientLight(0xffffff,3);
+    scene.add(ambient);
+
+    //helper（位置確認）
+    var axis = new THREE.AxisHelper(1000);
+    axis.position.set(0, 0, 0);
+    scene.add(axis);
+
+    //camera（視点を決める）
+    //透視投影法(画角/縦横比/手前/奥行き)
+    var camera = new THREE.PerspectiveCamera(100, width / height, 1, 1000);
+    camera.position = new THREE.Vector3(100, 100, 10);
+    scene.add(camera);
+
+    //rendering（描画させる）
+    //アンチエイリアス処理を有効
+    var renderer = new THREE.WebGLRenderer({ antialias:true });
+
+    //ステージの大きさ
+    renderer.setSize(width, height);
+
+    //ステージの色
+    renderer.setClearColor(0xfffcdd, 2);
+    renderer.shadowMapEnabled = true;
+    document.getElementById('stage').appendChild(renderer.domElement);
+
+    //control マウスで視点を動かせる関数
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    function render() {
+      requestAnimationFrame(render);
+        mesh.position.x = Math.sin(new Date().getTime() / (200));
+        mesh_e_r.position.x = Math.sin(new Date().getTime() / (200));
+        mesh_e_l.position.x = Math.sin(new Date().getTime() / (200));
+      renderer.render(scene, camera);
+      controls.update();
+    }
+    render();
+  })();
+</script>
+</body>
+</html>

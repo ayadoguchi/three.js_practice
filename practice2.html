@@ -19,7 +19,10 @@
 
     //mesh（形を作る）
       var geometry = new THREE.SphereGeometry(1, 32, 16);
-      var material = new THREE.MeshLambertMaterial({ color: 0xffffff, ambient: 0xffffff, specular: 0xcccccc, shininess: 50, metal: true, map: THREE.ImageUtils.loadTexture('img/earth_lights_lrg.jpg')});
+    var texture = THREE.ImageUtils.loadTexture('img/earth_lights_lrg.jpg');
+    var material = new THREE.MeshPhongMaterial({
+      color: 0xffffff, specular: 0xcccccc, shininess:100, ambient: 0xffffff,
+      map: texture, bumpMap:texture, bumpScale: 0.05});
 
       var mesh = new THREE.Mesh(geometry, material);
       scene.add(mesh);
